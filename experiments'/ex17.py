@@ -1,8 +1,8 @@
-import gym
+import gymnasium as gym
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.optimizers import Adam
 import random
 
@@ -14,8 +14,9 @@ epsilon = float(input("Enter Epsilon: "))
 episodes = int(input("Enter Number of Episodes: "))
 
 model = Sequential([
-    Dense(24, activation="relu", input_shape=(2,)),
-    Dense(24, activation="relu"),
+    Input(shape=(2,)),
+    Dense(16, activation="relu"),
+    Dense(16, activation="relu"),
     Dense(3, activation="linear")
 ])
 
@@ -23,30 +24,25 @@ model.compile(optimizer=Adam(learning_rate=alpha), loss="mse")
 
 for episode in range(episodes):
 
-    state = env.reset()
+    print("Episode:", episode + 1)
 
-    if isinstance(state, tuple):
-        state = state[0]
-
+    state, info = env.reset()
     state = np.reshape(state, (1, 2))
 
     done = False
+    step = 0
 
-    while not done:
+    while not done and step < 20:
 
         if random.random() < epsilon:
             action = env.action_space.sample()
         else:
-            q = model.predict(state, verbose=0)
-            action = np.argmax(q[0])
+            q_values = model.predict(state, verbose=0)
+            action = np.argmax(q_values[0])
 
-        result = env.step(action)
+        next_state, reward, terminated, truncated, info = env.step(action)
 
-        if len(result) == 5:
-            next_state, reward, terminated, truncated, info = result
-            done = terminated or truncated
-        else:
-            next_state, reward, done, info = result
+        done = terminated or truncated
 
         next_state = np.reshape(next_state, (1, 2))
 
@@ -58,37 +54,32 @@ for episode in range(episodes):
         target_q = model.predict(state, verbose=0)
         target_q[0][action] = target
 
-        model.fit(state, target_q, epochs=1, verbose=0)
-
         state = next_state
+        step += 1
+
+    model.fit(state, target_q, epochs=1, verbose=0)
 
 print("\nTraining Completed")
 
-state = env.reset()
-
-if isinstance(state, tuple):
-    state = state[0]
-
+state, info = env.reset()
 state = np.reshape(state, (1, 2))
 
 done = False
 total_reward = 0
+steps = 0
 
-while not done:
+while not done and steps < 20:
 
-    q = model.predict(state, verbose=0)
-    action = np.argmax(q[0])
+    q_values = model.predict(state, verbose=0)
+    action = np.argmax(q_values[0])
 
-    result = env.step(action)
+    next_state, reward, terminated, truncated, info = env.step(action)
 
-    if len(result) == 5:
-        next_state, reward, terminated, truncated, info = result
-        done = terminated or truncated
-    else:
-        next_state, reward, done, info = result
+    done = terminated or truncated
 
     total_reward += reward
     state = np.reshape(next_state, (1, 2))
+    steps += 1
 
 print("Total Reward:", total_reward)
 
