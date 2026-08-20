@@ -1,3 +1,6 @@
+#An online platform uses bandit algorithms to decide which advertisements to show to users.
+Implement epsilon-greedy, UCB, and Thompson Sampling algorithms. Use a Python
+
 import random
 
 ads = ["Ad A", "Ad B", "Ad C"]
