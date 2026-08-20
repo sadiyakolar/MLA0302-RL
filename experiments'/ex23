@@ -1,0 +1,28 @@
+#Explain the relationship between policy and value functions using a practical gridworld
+example. Implement this relationship in Python and visualize how different policies affect
+the value function.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+n = int(input("Enter Grid Size: "))
+
+value = np.zeros((n, n))
+
+for i in range(10):
+
+    for r in range(n):
+        for c in range(n):
+
+            if r == n - 1 and c == n - 1:
+                value[r][c] = 10
+            else:
+                value[r][c] = -1 + 0.9 * value[min(r + 1, n - 1)][c]
+
+print("\nValue Function:")
+print(value)
+
+plt.imshow(value)
+plt.colorbar()
+plt.title("GridWorld Value Function")
+plt.show()
