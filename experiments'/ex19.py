@@ -1,3 +1,7 @@
+#Use Monte Carlo methods to evaluate a policy for predicting customer churn in a
+subscription-based service. Implement this policy evaluation in Python and analyze the
+results.
+
 import numpy as np
 import random
 
