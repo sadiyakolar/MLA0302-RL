@@ -1,3 +1,8 @@
+#16) A robot navigates a grid to perform tasks. Use Bellman’s optimality equation to compute the
+optimal state-value function for the robot’s navigation tasks. Implement this in Python and
+demonstrate the optimal path.
+
+
 import numpy as np
 
 rows = int(input("Enter Number of Rows: "))
