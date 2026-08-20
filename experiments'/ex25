@@ -1,0 +1,29 @@
+#Model a smart grid that manages energy consumption and production to minimize costs and
+balance supply and demand using Trust Region Policy Optimization (TRPO) to optimize
+energy management.
+
+import random
+
+episodes = int(input("Enter Number of Episodes: "))
+energy = int(input("Enter Initial Energy: "))
+
+policy = 0.5
+
+for e in range(episodes):
+
+    demand = random.randint(20, 100)
+    production = random.randint(20, 100)
+
+    action = policy * energy
+
+    cost = abs(demand - production) + abs(action - demand)
+
+    if cost > 50:
+        policy -= 0.05
+    else:
+        policy += 0.05
+
+    policy = max(0, min(1, policy))
+
+print("\nTraining Completed")
+print("Optimized Energy Policy:", round(policy, 2))
