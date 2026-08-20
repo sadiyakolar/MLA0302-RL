@@ -1,0 +1,39 @@
+#Simulate a k-armed bandit problem to optimize marketing campaign choices. Implement
+epsilon-greedy, UCB, and Thompson Sampling algorithms in Python and evaluate their
+performance.
+
+import random
+
+n = int(input("Enter Number of Arms: "))
+rounds = int(input("Enter Number of Rounds: "))
+epsilon = float(input("Enter Epsilon: "))
+
+success = [0] * n
+count = [0] * n
+
+for i in range(rounds):
+
+    if random.random() < epsilon:
+        arm = random.randint(0, n - 1)
+    else:
+        values = []
+
+        for j in range(n):
+            if count[j] == 0:
+                values.append(999)
+            else:
+                values.append(success[j] / count[j])
+
+        arm = values.index(max(values))
+
+    r = random.randint(0, 1)
+
+    success[arm] += r
+    count[arm] += 1
+
+print("\nEpsilon-Greedy Results")
+
+for i in range(n):
+    print("Arm", i + 1, "=", success[i])
+
+print("Best Arm:", success.index(max(success)) + 1)
