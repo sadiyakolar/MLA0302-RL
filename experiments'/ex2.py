@@ -1,3 +1,5 @@
+#A robot navigates a warehouse to pick and place items. Define states (locations in the warehouse), actions (move in four directions), and rewards (picking an item: +2, reaching the goal: +5, hitting an obstacle: -2). Implement a policy evaluation algorithm to determinethe value function for a given policy in Python.
+ 
 SIZE = int(input("Enter Grid Size (e.g., 5): "))
 num_items = int(input("Enter number of item locations: "))
 ITEMS = []
