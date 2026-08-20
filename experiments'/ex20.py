@@ -1,3 +1,8 @@
+#Implement an epsilon-greedy strategy to optimize content recommendations on an online
+learning platform. Write a Python script to simulate and analyze its performance over
+multiple runs.
+
+
 import numpy as np
 import random
 
