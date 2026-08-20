@@ -1,0 +1,29 @@
+#In an inventory management system, use Bellman’s equation to find the optimal policy for
+ordering stock. Implement this in Python and demonstrate how the optimal policy minimizes
+costs
+
+import numpy as np
+
+stock = int(input("Enter Maximum Stock: "))
+iterations = int(input("Enter Iterations: "))
+
+value = np.zeros(stock + 1)
+
+for k in range(iterations):
+
+    new = np.zeros(stock + 1)
+
+    for s in range(stock + 1):
+
+        order = 0
+
+        cost = order + (stock - s)
+
+        new[s] = -cost + 0.9 * value[stock]
+
+    value = new
+
+print("\nOptimal Values:")
+
+for i in range(stock + 1):
+    print("Stock", i, "->", round(value[i], 2))
