@@ -1,3 +1,7 @@
+#Set up an environment using OpenAI Gym and implement a policy to solve the MountainCar
+problem. Utilize Python libraries like Keras or TensorFlow to build and train the policy.
+
+
 import gymnasium as gym
 import numpy as np
 import tensorflow as tf
