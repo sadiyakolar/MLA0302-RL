@@ -1,0 +1,48 @@
+#26) Develop a recommendation system for a streaming service to suggest movies based on user
+feedback, implemented as an MDP and trained using a Deep Deterministic Policy Gradient
+(DDPG) algorithm.
+
+import numpy as np
+import random
+
+print("MOVIE RECOMMENDATION USING MDP")
+
+movies = int(input("Enter Number of Movies: "))
+episodes = int(input("Enter Number of Episodes: "))
+learning_rate = float(input("Enter Learning Rate: "))
+
+actor = np.random.rand(movies)
+critic = np.zeros(movies)
+
+for episode in range(episodes):
+
+    state = random.randint(0, movies - 1)
+
+    action = np.argmax(actor)
+
+    feedback = random.randint(1, 5)
+
+    reward = feedback
+
+    target = reward
+
+    error = target - critic[state]
+
+    critic[state] += learning_rate * error
+
+    actor[action] += learning_rate * reward
+
+    if episode % 10 == 0:
+        print("Episode:", episode + 1,
+              "Movie:", action + 1,
+              "Feedback:", feedback)
+
+print("\nRecommendation Scores:")
+
+for i in range(movies):
+    print("Movie", i + 1, "->", round(actor[i], 2))
+
+best = np.argmax(actor)
+
+print("\nRecommended Movie:", best + 1)
+print("Training Completed")
