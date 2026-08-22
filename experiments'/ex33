@@ -1,0 +1,77 @@
+#33) Implement a value-equivalence prediction model to estimate the long-term performance of
+different investment portfolios. Use historical financial data and machine learning
+techniques to predict the value equivalence of alternative portfolio allocations. Write a
+Python program to analyze and compare the predicted performances of various investment
+strategies.
+
+
+import random
+
+print("INVESTMENT VALUE-EQUIVALENCE PREDICTION")
+
+portfolios = int(input("Enter Number of Portfolios: "))
+years = int(input("Enter Number of Years: "))
+
+results = []
+
+for i in range(portfolios):
+
+    initial = float(
+        input(
+            "Enter Initial Investment for Portfolio "
+            + str(i + 1) + ": "
+        )
+    )
+
+    value = initial
+
+    total_return = 0
+
+    for year in range(years):
+
+        # Simulated historical return
+        rate = random.uniform(0.02, 0.12)
+
+        yearly_return = value * rate
+
+        value += yearly_return
+
+        total_return += yearly_return
+
+    results.append(value)
+
+    print(
+        "Portfolio",
+        i + 1,
+        "Final Value:",
+        round(value, 2)
+    )
+
+print("\nPortfolio Comparison")
+
+for i in range(portfolios):
+
+    print(
+        "Portfolio",
+        i + 1,
+        "Predicted Value =",
+        round(results[i], 2)
+    )
+
+best = results.index(max(results))
+
+worst = results.index(min(results))
+
+print("\nBest Portfolio:", best + 1)
+
+print(
+    "Best Predicted Value:",
+    round(results[best], 2)
+)
+
+print("\nLowest Portfolio:", worst + 1)
+
+print(
+    "Lowest Predicted Value:",
+    round(results[worst], 2)
+)
