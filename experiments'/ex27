@@ -6,39 +6,155 @@ penalties for hitting walls, and use REINFORCE to find the optimal navigation po
 
 import random
 
-print("FINANCIAL PORTFOLIO USING ACTOR-CRITIC")
+print("REINFORCEMENT LEARNING")
+print("1. Financial Portfolio - Actor Critic")
+print("2. Maze Navigation - REINFORCE")
 
-stocks = int(input("Enter Number of Stocks: "))
-episodes = int(input("Enter Number of Episodes: "))
-learning_rate = float(input("Enter Learning Rate: "))
+choice = int(input("Enter Choice: "))
 
-actor = [0.0] * stocks
-critic = 0.0
+# ---------------- FINANCIAL PORTFOLIO ----------------
 
-for episode in range(episodes):
+if choice == 1:
 
-    stock = random.randint(0, stocks - 1)
+    print("\nFINANCIAL PORTFOLIO USING ACTOR-CRITIC")
 
-    return_value = random.randint(-5, 10)
+    stocks = int(input("Enter Number of Stocks: "))
+    episodes = int(input("Enter Number of Episodes: "))
+    alpha = float(input("Enter Learning Rate: "))
 
-    advantage = return_value - critic
+    actor = [0.0] * stocks
+    critic = 0.0
 
-    actor[stock] += learning_rate * advantage
+    for episode in range(episodes):
 
-    critic += learning_rate * advantage
+        stock = random.randint(0, stocks - 1)
 
-    if episode % 10 == 0:
-        print("Episode:", episode + 1,
-              "Stock:", stock + 1,
-              "Return:", return_value)
+        return_value = random.randint(-5, 10)
 
-print("\nActor Values:")
+        advantage = return_value - critic
 
-for i in range(stocks):
-    print("Stock", i + 1, "->",
-          round(actor[i], 2))
+        actor[stock] = actor[stock] + alpha * advantage
 
-best = actor.index(max(actor))
+        critic = critic + alpha * advantage
 
-print("\nBest Stock:", best + 1)
-print("Training Completed")
+        if episode % 10 == 0:
+            print(
+                "Episode:", episode + 1,
+                "Stock:", stock + 1,
+                "Return:", return_value
+            )
+
+    print("\nFinal Actor Values:")
+
+    for i in range(stocks):
+        print(
+            "Stock", i + 1,
+            "=", round(actor[i], 2)
+        )
+
+    best = actor.index(max(actor))
+
+    print("\nBest Stock:", best + 1)
+    print("Training Completed")
+
+
+# ---------------- MAZE ----------------
+
+elif choice == 2:
+
+    print("\nMAZE NAVIGATION USING REINFORCE")
+
+    size = int(input("Enter Maze Size: "))
+    episodes = int(input("Enter Number of Episodes: "))
+    alpha = float(input("Enter Learning Rate: "))
+
+    actions = [
+        "Up",
+        "Down",
+        "Left",
+        "Right"
+    ]
+
+    policy = [0.0, 0.0, 0.0, 0.0]
+
+    for episode in range(episodes):
+
+        x = 0
+        y = 0
+
+        total_reward = 0
+
+        for step in range(size * size * 2):
+
+            action = random.randint(0, 3)
+
+            nx = x
+            ny = y
+
+            if action == 0:
+                nx -= 1
+
+            elif action == 1:
+                nx += 1
+
+            elif action == 2:
+                ny -= 1
+
+            elif action == 3:
+                ny += 1
+
+            # Wall condition
+            if nx < 0 or nx >= size or ny < 0 or ny >= size:
+
+                reward = -5
+
+            else:
+
+                x = nx
+                y = ny
+
+                # Exit condition
+                if x == size - 1 and y == size - 1:
+                    reward = 10
+                else:
+                    reward = -1
+
+            total_reward += reward
+
+            # REINFORCE update
+            policy[action] = (
+                policy[action]
+                + alpha * reward
+            )
+
+            if x == size - 1 and y == size - 1:
+                break
+
+        if episode % 10 == 0:
+
+            print(
+                "Episode:",
+                episode + 1,
+                "Reward:",
+                total_reward
+            )
+
+    print("\nLearned Policy:")
+
+    for i in range(4):
+
+        print(
+            actions[i],
+            "=",
+            round(policy[i], 2)
+        )
+
+    best = policy.index(max(policy))
+
+    print("\nBest Action:", actions[best])
+    print("Training Completed")
+
+
+else:
+
+    print("Invalid Choice")
