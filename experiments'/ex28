@@ -1,0 +1,74 @@
+#28) Develop an AI agent to play a real-time strategy game (e.g., Age of Empires) using ActorCritic
+methods. Implement the actor and critic networks in Python and train the agent to build
+structures, gather resources, and engage in strategic combat.
+
+import random
+
+print("MAZE NAVIGATION USING REINFORCE")
+
+size = int(input("Enter Maze Size: "))
+episodes = int(input("Enter Number of Episodes: "))
+learning_rate = float(input("Enter Learning Rate: "))
+
+actions = ["Up", "Down", "Left", "Right"]
+
+policy = [0.0, 0.0, 0.0, 0.0]
+
+for episode in range(episodes):
+
+    x = 0
+    y = 0
+
+    total_reward = 0
+
+    for step in range(size * size * 2):
+
+        action = random.randint(0, 3)
+
+        nx = x
+        ny = y
+
+        if action == 0:
+            nx -= 1
+        elif action == 1:
+            nx += 1
+        elif action == 2:
+            ny -= 1
+        else:
+            ny += 1
+
+        if nx < 0 or nx >= size or ny < 0 or ny >= size:
+
+            reward = -5
+
+        else:
+
+            x = nx
+            y = ny
+
+            if x == size - 1 and y == size - 1:
+                reward = 10
+            else:
+                reward = -1
+
+        total_reward += reward
+
+        policy[action] += learning_rate * reward
+
+        if x == size - 1 and y == size - 1:
+            break
+
+    if episode % 10 == 0:
+        print("Episode:", episode + 1,
+              "Reward:", total_reward)
+
+print("\nLearned Policy:")
+
+for i in range(4):
+    print(actions[i], "->",
+          round(policy[i], 2))
+
+best = policy.index(max(policy))
+
+print("\nBest Action:", actions[best])
+print("Training Completed")
