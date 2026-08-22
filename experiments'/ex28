@@ -4,71 +4,44 @@ structures, gather resources, and engage in strategic combat.
 
 import random
 
-print("MAZE NAVIGATION USING REINFORCE")
+print("RTS GAME USING ACTOR-CRITIC")
 
-size = int(input("Enter Maze Size: "))
 episodes = int(input("Enter Number of Episodes: "))
-learning_rate = float(input("Enter Learning Rate: "))
+alpha = float(input("Enter Learning Rate: "))
 
-actions = ["Up", "Down", "Left", "Right"]
+actions = ["Build", "Gather", "Attack"]
 
-policy = [0.0, 0.0, 0.0, 0.0]
+actor = [0.0, 0.0, 0.0]
+critic = 0.0
 
 for episode in range(episodes):
 
-    x = 0
-    y = 0
+    action = random.randint(0, 2)
 
-    total_reward = 0
+    if action == 0:
+        reward = 5
+    elif action == 1:
+        reward = 3
+    else:
+        reward = 10
 
-    for step in range(size * size * 2):
+    advantage = reward - critic
 
-        action = random.randint(0, 3)
+    actor[action] += alpha * advantage
 
-        nx = x
-        ny = y
-
-        if action == 0:
-            nx -= 1
-        elif action == 1:
-            nx += 1
-        elif action == 2:
-            ny -= 1
-        else:
-            ny += 1
-
-        if nx < 0 or nx >= size or ny < 0 or ny >= size:
-
-            reward = -5
-
-        else:
-
-            x = nx
-            y = ny
-
-            if x == size - 1 and y == size - 1:
-                reward = 10
-            else:
-                reward = -1
-
-        total_reward += reward
-
-        policy[action] += learning_rate * reward
-
-        if x == size - 1 and y == size - 1:
-            break
+    critic += alpha * advantage
 
     if episode % 10 == 0:
         print("Episode:", episode + 1,
-              "Reward:", total_reward)
+              "Action:", actions[action],
+              "Reward:", reward)
 
-print("\nLearned Policy:")
+print("\nActor Values:")
 
-for i in range(4):
-    print(actions[i], "->",
-          round(policy[i], 2))
+for i in range(3):
+    print(actions[i], "=", round(actor[i], 2))
 
-best = policy.index(max(policy))
+best = actor.index(max(actor))
 
-print("\nBest Action:", actions[best])
+print("\nBest Strategy:", actions[best])
 print("Training Completed")
