@@ -1,0 +1,44 @@
+#27) Implement an agent that manages a financial portfolio, choosing stocks to maximize returns
+and minimize risk using an Actor-Critic (A3C) method to optimize investment. Implement a
+robot that navigates a maze to reach the exit, with rewards for reaching the exit and
+penalties for hitting walls, and use REINFORCE to find the optimal navigation policy.
+
+
+import random
+
+print("FINANCIAL PORTFOLIO USING ACTOR-CRITIC")
+
+stocks = int(input("Enter Number of Stocks: "))
+episodes = int(input("Enter Number of Episodes: "))
+learning_rate = float(input("Enter Learning Rate: "))
+
+actor = [0.0] * stocks
+critic = 0.0
+
+for episode in range(episodes):
+
+    stock = random.randint(0, stocks - 1)
+
+    return_value = random.randint(-5, 10)
+
+    advantage = return_value - critic
+
+    actor[stock] += learning_rate * advantage
+
+    critic += learning_rate * advantage
+
+    if episode % 10 == 0:
+        print("Episode:", episode + 1,
+              "Stock:", stock + 1,
+              "Return:", return_value)
+
+print("\nActor Values:")
+
+for i in range(stocks):
+    print("Stock", i + 1, "->",
+          round(actor[i], 2))
+
+best = actor.index(max(actor))
+
+print("\nBest Stock:", best + 1)
+print("Training Completed")
