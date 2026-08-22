@@ -1,0 +1,185 @@
+#35) urban environment. Implement a sampling-based planning algorithm (e.g., RRT, RRT*,
+or PRM) to plan collision-free flight paths for the UAV while maximizing coverage and
+minimizing detection latency. Write a Python program to simulate the UAV&#39;s surveillance
+mission and visualize the planned paths.
+
+import random
+import matplotlib.pyplot as plt
+
+print("UAV SURVEILLANCE USING RRT")
+
+size = int(input("Enter Urban Area Size: "))
+
+sx = int(input("Enter Start X: "))
+sy = int(input("Enter Start Y: "))
+
+gx = int(input("Enter Goal X: "))
+gy = int(input("Enter Goal Y: "))
+
+obstacle_count = int(
+    input("Enter Number of Obstacles: ")
+)
+
+obstacles = []
+
+for i in range(obstacle_count):
+
+    x = int(
+        input(
+            "Enter Obstacle "
+            + str(i + 1)
+            + " X: "
+        )
+    )
+
+    y = int(
+        input(
+            "Enter Obstacle "
+            + str(i + 1)
+            + " Y: "
+        )
+    )
+
+    obstacles.append((x, y))
+
+start = (sx, sy)
+goal = (gx, gy)
+
+path = [start]
+
+x = sx
+y = sy
+
+print("\nPlanning UAV Route...")
+
+for step in range(size * size * 5):
+
+    if (x, y) == goal:
+        break
+
+    moves = []
+
+    if x < gx:
+        moves.append((x + 1, y))
+
+    if x > gx:
+        moves.append((x - 1, y))
+
+    if y < gy:
+        moves.append((x, y + 1))
+
+    if y > gy:
+        moves.append((x, y - 1))
+
+    # Diagonal movement
+    if x < gx and y < gy:
+        moves.append((x + 1, y + 1))
+
+    if x > gx and y > gy:
+        moves.append((x - 1, y - 1))
+
+    valid_moves = []
+
+    for move in moves:
+
+        mx, my = move
+
+        if mx < 0 or mx >= size:
+            continue
+
+        if my < 0 or my >= size:
+            continue
+
+        if move in obstacles:
+            continue
+
+        valid_moves.append(move)
+
+    if len(valid_moves) == 0:
+
+        print("No collision-free route found.")
+        break
+
+    # Select random valid route
+    x, y = random.choice(valid_moves)
+
+    path.append((x, y))
+
+print("\nObstacles:")
+print(obstacles)
+
+print("\nPlanned UAV Path:")
+print(path)
+
+# Calculate distance
+distance = 0
+
+for i in range(1, len(path)):
+
+    x1, y1 = path[i - 1]
+    x2, y2 = path[i]
+
+    distance += (
+        (x2 - x1) ** 2 +
+        (y2 - y1) ** 2
+    ) ** 0.5
+
+print("\nPath Distance:",
+      round(distance, 2))
+
+if (x, y) == goal:
+
+    print("Mission Completed!")
+
+else:
+
+    print("Mission Failed!")
+
+# Visualization
+px = [p[0] for p in path]
+py = [p[1] for p in path]
+
+plt.plot(
+    px,
+    py,
+    marker="o",
+    label="UAV Path"
+)
+
+for obstacle in obstacles:
+
+    plt.scatter(
+        obstacle[0],
+        obstacle[1],
+        color="red",
+        s=120
+    )
+
+plt.scatter(
+    sx,
+    sy,
+    color="green",
+    s=120,
+    label="Start"
+)
+
+plt.scatter(
+    gx,
+    gy,
+    color="blue",
+    s=120,
+    label="Goal"
+)
+
+plt.title("UAV Surveillance using RRT")
+
+plt.xlabel("X Coordinate")
+plt.ylabel("Y Coordinate")
+
+plt.xlim(0, size)
+plt.ylim(0, size)
+
+plt.grid()
+plt.legend()
+
+plt.show()
