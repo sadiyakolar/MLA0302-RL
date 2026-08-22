@@ -1,0 +1,91 @@
+#29) Train an AI agent to compete in autonomous vehicle racing competitions using Advantage
+Actor-Critic (A2C) methods. Implement A2C in Python to learn aggressive driving policies
+that optimize lap times and race performance.
+
+import random
+
+print("AUTONOMOUS VEHICLE RACING USING A2C")
+
+episodes = int(input("Enter Number of Episodes: "))
+learning_rate = float(input("Enter Learning Rate: "))
+gamma = float(input("Enter Discount Factor: "))
+
+actions = ["Brake", "Accelerate", "Turn Left", "Turn Right"]
+
+# Actor values
+actor = [0.0, 0.0, 0.0, 0.0]
+
+# Critic value
+critic = 0.0
+
+for episode in range(episodes):
+
+    # Vehicle state
+    speed = random.randint(20, 80)
+    position = random.randint(0, 10)
+
+    total_reward = 0
+
+    for step in range(10):
+
+        # Select action
+        action = random.randint(0, 3)
+
+        # Simulate reward
+        if action == 0:
+            reward = 3
+            speed = max(10, speed - 10)
+
+        elif action == 1:
+            reward = 8
+            speed = min(100, speed + 10)
+
+        elif action == 2:
+            reward = 5
+            position = max(0, position - 1)
+
+        else:
+            reward = 5
+            position = min(10, position + 1)
+
+        # Small penalty for very high speed
+        if speed > 90:
+            reward -= 3
+
+        # Advantage
+        advantage = reward - critic
+
+        # Actor update
+        actor[action] += learning_rate * advantage
+
+        # Critic update
+        critic += learning_rate * advantage
+
+        total_reward += reward
+
+    if episode % 10 == 0:
+
+        print(
+            "Episode:", episode + 1,
+            "Speed:", speed,
+            "Reward:", total_reward
+        )
+
+print("\nTraining Completed")
+
+print("\nActor Policy Values:")
+
+for i in range(4):
+    print(
+        actions[i],
+        "=",
+        round(actor[i], 2)
+    )
+
+best = actor.index(max(actor))
+
+print("\nBest Driving Action:",
+      actions[best])
+
+print("Critic Value:",
+      round(critic, 2))
