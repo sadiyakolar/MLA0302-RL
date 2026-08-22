@@ -1,0 +1,77 @@
+#32) A retail company aims to optimize its inventory management strategy using model-based RL.
+Develop a data generation model that simulates customer demand patterns and inventory
+dynamics. Use Python to generate synthetic data and evaluate different inventory
+management policies based on the simulated environment.
+
+import random
+
+print("INVENTORY MANAGEMENT USING MODEL-BASED RL")
+
+capacity = int(input("Enter Maximum Inventory: "))
+episodes = int(input("Enter Number of Episodes: "))
+learning_rate = float(input("Enter Learning Rate: "))
+
+inventory = capacity
+total_cost = 0
+
+for episode in range(episodes):
+
+    # Simulate customer demand
+    demand = random.randint(1, 15)
+
+    # Model-based decision
+    if inventory < demand:
+        order = capacity - inventory
+    elif inventory < capacity // 2:
+        order = capacity // 2
+    else:
+        order = 0
+
+    inventory += order
+
+    # Sales
+    sales = min(inventory, demand)
+
+    inventory -= sales
+
+    # Costs
+    ordering_cost = order * 2
+
+    holding_cost = inventory * 1
+
+    shortage = demand - sales
+
+    shortage_cost = shortage * 5
+
+    total = (
+        ordering_cost
+        + holding_cost
+        + shortage_cost
+    )
+
+    total_cost += total
+
+    # Small learning adjustment
+    if shortage > 0:
+        capacity += 1
+
+    if episode % 10 == 0:
+
+        print(
+            "Episode:", episode + 1,
+            "Demand:", demand,
+            "Order:", order,
+            "Remaining:", inventory,
+            "Cost:", total
+        )
+
+print("\nSimulation Completed")
+
+print("Total Cost:", total_cost)
+
+print(
+    "Average Cost:",
+    round(total_cost / episodes, 2)
+)
+
+print("Final Inventory:", inventory)
